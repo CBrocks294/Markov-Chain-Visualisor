@@ -29,7 +29,7 @@ class Fraction:
     def __sub__(self,other):
         return self + other *-1
     def __rsub__(self,other):
-        return self - other
+        return -1*(self - other)
     def __int__(self):
         return int(self.numerator/self.denominator)
     def __float__(self):

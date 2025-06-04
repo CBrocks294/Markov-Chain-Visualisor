@@ -13,7 +13,7 @@ SingleAgentConnections = []
 
 TransMatrix = np.zeros((5,5),
                        dtype=np.int16).tolist()
-TransMatrix[0][0] = Fraction(1, 2)
+TransMatrix[1][0] = Fraction(1, 2)
 TransMatrix[4][0] = Fraction(1, 2)
 TransMatrix[2][1] = Fraction(1)
 TransMatrix[1][2] = Fraction(1,3)
@@ -232,12 +232,8 @@ def makeTimeBacking():
         item.scaleby = "vertical"
     TimeBacking = ui.makewindow(10, 10, 1000-10,880, ID= "TBack",bounditems = TimeBackingItems,backingdraw=False,animationtype= 'movedown',autoshutwindows=["MBack", "ABack"])
 
-def updateConnectionCords(): pass
-
-
 
 def connectNodes():
-
     if OptionSelector.active == "Agents":
         yoffset = 0
         try:
@@ -395,8 +391,10 @@ def doStep(animate=True):
             return
         if animate:
             AgentsAnimating[0]= True
-        if (frames := int(ui.IDs["AgentAnimTime"].text)) !=0:
-            AgentAnimationFrames[0] = frames
+        try:
+            if (frames := int(ui.IDs["AgentAnimTime"].text)) !=0:
+                AgentAnimationFrames[0] = frames
+        except: pass
         for Agent in Agents:
             currentPos = Agent[0]
             choice = random.random()
@@ -409,24 +407,27 @@ def doStep(animate=True):
             Agent[2], Agent[3] = 25*np.array([np.cos(theta := 360*random.random()), np.sin(theta)]), Agent[2]
         for updateBar in range(NumNodes):
             ui.IDs["AgentBar"+ str(updateBar)].width = 300*len(list(filter(lambda x: x[0] == updateBar, Agents)))/len(Agents)
+
     elif OptionSelector.active == "T Avg":
         if SingleAgentAnimating[0]:
             return
         if animate:
             SingleAgentAnimating[0] = True
-        if (frames := int(ui.IDs["SingleAgentAnimTime"].text)) != 0:
-            SingleAgentAnimationFrames[0] = frames
-            currentPos = SingleAgent[0][-1]
-            choice = random.random()
-            for destin in range(NumNodes):
-                choice -= NPTransMatrix[destin][currentPos]
-                if choice <= 0:
-                    break
-            SingleAgent[0].append(destin)
-            SingleAgent[1], SingleAgent[2] = 25 * np.array([np.cos(theta := 360 * random.random()), np.sin(theta)]), SingleAgent[1]
-            visitedTally[destin] += 1
-            for updateBar in range(NumNodes):
-                ui.IDs["SingleAgentBar" + str(updateBar)].width = 300 * visitedTally[updateBar]/sum(visitedTally)
+        try:
+            if (frames := int(ui.IDs["SingleAgentAnimTime"].text)) != 0:
+                SingleAgentAnimationFrames[0] = frames
+        except: pass
+        currentPos = SingleAgent[0][-1]
+        choice = random.random()
+        for destin in range(NumNodes):
+            choice -= NPTransMatrix[destin][currentPos]
+            if choice <= 0:
+                break
+        SingleAgent[0].append(destin)
+        SingleAgent[1], SingleAgent[2] = 25 * np.array([np.cos(theta := 360 * random.random()), np.sin(theta)]), SingleAgent[1]
+        visitedTally[destin] += 1
+        for updateBar in range(NumNodes):
+            ui.IDs["SingleAgentBar" + str(updateBar)].width = 300 * visitedTally[updateBar]/sum(visitedTally)
 def skipAgentForwards():
     if OptionSelector.active == "Agents":
         try:
@@ -437,7 +438,6 @@ def skipAgentForwards():
     elif OptionSelector.active == "T Avg":
         try:
             for x in range(int(ui.IDs["SingleAgentSkipIters"].text)):
-                print('AAAAAAAAAA')
                 doStep(False)
         except:
             pass
