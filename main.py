@@ -244,24 +244,24 @@ def connectNodes():
             scalex = Start.dirscale[0]
             scaley = Start.dirscale[1]
             scaleMat = np.array([[scalex,0],[0,scaley]])
-            StartCords = np.array([(Start.x+25)*scalex, (Start.y+25+yoffset)*scaley])
+            StartCords = np.array([(scalex * Start.x+scaley*25), (Start.y+25+yoffset)*scaley])
             End = ui.IDs["AgentNode"+ str(connection[1])]
-            EndCords = np.array([(End.x+25)*scalex, (End.y+25+yoffset)*scaley])
+            EndCords = np.array([(End.x*scalex+25*scaley), (End.y+25+yoffset)*scaley])
             StartToEnd = (EndCords - StartCords)
             if (normalfactor := np.linalg.norm(StartToEnd,2)) == 0:
-                 StartCords = (StartCords+np.array([0,-scalex])*25)
+                 StartCords = (StartCords+np.array([0,-scaley])*25)
                  EndCords  = (EndCords+np.array([-scaley,0])*25)
-                 setOfPoints = [StartCords, (StartCords+ (np.array([0,-scaley])*70)), (EndCords+ (np.array([-scalex,0])*70)), EndCords]
+                 setOfPoints = [StartCords, (StartCords+ (np.array([0,-scaley])*70)), (EndCords+ (np.array([-scaley,0])*70)), EndCords]
             else:
                 if NPTransMatrix[connection[0]][connection[1]] == 0:
-                    StartCords = (StartCords + scaleMat @ StartToEnd * 25 / normalfactor)
-                    EndCords = (EndCords - scaleMat @ StartToEnd * 25 / normalfactor)
+                    StartCords = (StartCords + scaley* StartToEnd * 25 / normalfactor)
+                    EndCords = (EndCords - scaley * StartToEnd * 25 / normalfactor)
                     setOfPoints = [StartCords, EndCords]
 
                 else:
-                    CurvePoint = 1/5*np.array([[0,scalex],[-scaley,0]]) @ StartToEnd/2 + (StartCords + StartToEnd/2)
-                    StartCords = (StartCords+ scaleMat @ StartToEnd*25/normalfactor)
-                    EndCords = (EndCords - scaleMat @ StartToEnd * 25/normalfactor)
+                    CurvePoint = 1/5*scaley * StartToEnd/2 + (StartCords + StartToEnd/2)
+                    StartCords = (StartCords+ scaley* StartToEnd*25/normalfactor)
+                    EndCords = (EndCords - scaley*StartToEnd * 25/normalfactor)
                     setOfPoints = [StartCords,CurvePoint, EndCords]
 
             #pygame.draw.line(screen, (0,0,0),StartCords,EndCords,2)
@@ -293,24 +293,24 @@ def connectNodes():
             scalex = Start.dirscale[0]
             scaley = Start.dirscale[1]
             scaleMat = np.array([[scalex, 0], [0, scaley]])
-            StartCords = np.array([(Start.x + 25)*scalex, scaley*(Start.y + 25 + yoffset)])
+            StartCords = np.array([(Start.x *scalex+ 25*scaley), scaley*(Start.y + 25 + yoffset)])
             End = ui.IDs["SingleAgentNode" + str(connection[1])]
-            EndCords = np.array([(End.x + 25)*scalex, scaley*(End.y + 25 + yoffset)])
+            EndCords = np.array([(End.x*scalex + 25*scaley), scaley*(End.y + 25 + yoffset)])
             StartToEnd = (EndCords - StartCords)
             if (normalfactor := np.linalg.norm(StartToEnd,2)) == 0:
                  StartCords = (StartCords+np.array([0,-scaley])*25)
-                 EndCords  = (EndCords+np.array([-scalex,0])*25)
+                 EndCords  = (EndCords+np.array([-scaley,0])*25)
                  setOfPoints = [StartCords, (StartCords+ (np.array([0,-scaley])*70)), (EndCords+ (np.array([-scalex,0])*70)), EndCords]
 
             else:
                 if NPTransMatrix[connection[0]][connection[1]] == 0:
-                    StartCords = (StartCords + scaleMat @ StartToEnd * 25 / normalfactor)
-                    EndCords = (EndCords - scaleMat @ StartToEnd * 25 / normalfactor)
+                    StartCords = (StartCords + scaley* StartToEnd * 25 / normalfactor)
+                    EndCords = (EndCords - scaley* StartToEnd * 25 / normalfactor)
                     setOfPoints = [StartCords, EndCords]
                 else:
-                    CurvePoint = 1/5*np.array([[0,scaley],[-scalex,0]]) @ StartToEnd/2 + (StartCords + StartToEnd/2)
-                    StartCords = (StartCords+scaleMat @ StartToEnd*25/normalfactor)
-                    EndCords = (EndCords - scaleMat @ StartToEnd * 25/normalfactor)
+                    CurvePoint = 1/5*np.array([[0,scaley],[-scaley,0]]) @ StartToEnd/2 + (StartCords + StartToEnd/2)
+                    StartCords = (StartCords+scaley* StartToEnd*25/normalfactor)
+                    EndCords = (EndCords - scaley* StartToEnd * 25/normalfactor)
                     setOfPoints = [StartCords,CurvePoint, EndCords]
 
             # print(pyui.draw.bezierdrawer((StartCords,EndCords),2,commandpoints=False))
@@ -343,15 +343,15 @@ def drawAgents():
         if not(AgentsAnimating[0]):
             for Agent in Agents:
                 Start = ui.IDs["AgentNode"+ str(Agent[0])]
-                StartCords = (np.array([(Start.x + 25)*scalex, scaley*(Start.y + 25+ yoffset)])+ scaleMat @ Agent[2])
+                StartCords = (np.array([(Start.x *scalex + 25*scaley), scaley*(Start.y + 25+ yoffset)])+ scaley * Agent[2])
                 pyui.draw.circle(screen, (255,20,100),StartCords, 3)
             return
         for Agent in Agents:
             Start = ui.IDs["AgentNode" + str(Agent[1])]
             End = ui.IDs["AgentNode" + str(Agent[0])]
-            StartCords = scaleMat @ (np.array([(Start.x + 25), (Start.y + 25 + yoffset)]) + Agent[3])
-            EndCords = scaleMat @  (np.array([(End.x + 25), (End.y + 25 + yoffset)]) + Agent[2])
-            pyui.draw.circle(screen, (255, 20, 100), StartCords - (CurrentFrame[0]/AgentAnimationFrames[0]) * (StartCords-EndCords), 3*scalex)
+            StartCords =  (np.array([(Start.x*scalex + 25*scaley),scaley* (Start.y + 25 + yoffset)]) + scaley*Agent[3])
+            EndCords = scaleMat @  (np.array([scalex*(End.x) + scaley*(25), scaley*(End.y + 25 + yoffset)]) +scaley* Agent[2])
+            pyui.draw.circle(screen, (255, 20, 100), StartCords - (CurrentFrame[0]/AgentAnimationFrames[0]) * (StartCords-EndCords), 3*scaley)
         CurrentFrame[0] += 1
         if CurrentFrame[0] == AgentAnimationFrames[0]:
             CurrentFrame[0] = 0
@@ -369,13 +369,13 @@ def drawAgents():
         scaleMat = np.array([[scalex, 0], [0, scaley]])
         if not (SingleAgentAnimating[0]):
             Start = ui.IDs["SingleAgentNode" + str(SingleAgent[0][-1])]
-            StartCords = scaleMat @ (np.array([(Start.x + 25), (Start.y + 25 + yoffset)]) + SingleAgent[1])
+            StartCords =  (np.array([(scalex* Start.x + scaley*25), scaley*(Start.y + 25 + yoffset)]) + scaley*SingleAgent[1])
             pyui.draw.circle(screen, (255, 20, 100), StartCords, 3)
             return
         Start = ui.IDs["SingleAgentNode" + str(SingleAgent[0][-2])]
         End = ui.IDs["SingleAgentNode" + str(SingleAgent[0][-1])]
-        StartCords = scaleMat @(np.array([(Start.x + 25), (Start.y + 25 + yoffset)]) + SingleAgent[2])
-        EndCords = scaleMat @ (np.array([(End.x + 25), (End.y + 25 + yoffset)]) + SingleAgent[1])
+        StartCords = (np.array([(scalex*Start.x + scaley*25), scaley*(Start.y + 25 + yoffset)]) + scaley*SingleAgent[2])
+        EndCords =  (np.array([(scalex*End.x + scaley*25), scaley*(End.y + 25 + yoffset)]) +scaley* SingleAgent[1])
         pyui.draw.circle(screen, (255, 20, 100), StartCords - (CurrentSingleFrame[0] / SingleAgentAnimationFrames[0]) * (StartCords - EndCords), 3)
         CurrentSingleFrame[0] += 1
         if CurrentSingleFrame[0] == SingleAgentAnimationFrames[0]:
