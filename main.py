@@ -259,7 +259,7 @@ def connectNodes():
                     setOfPoints = [StartCords, EndCords]
 
                 else:
-                    CurvePoint = 1/5*scaley * StartToEnd/2 + (StartCords + StartToEnd/2)
+                    CurvePoint = 1/5* np.array([[0,scaley],[-scaley,0]]) @ StartToEnd/2 + (StartCords + StartToEnd/2)
                     StartCords = (StartCords+ scaley* StartToEnd*25/normalfactor)
                     EndCords = (EndCords - scaley*StartToEnd * 25/normalfactor)
                     setOfPoints = [StartCords,CurvePoint, EndCords]
@@ -350,7 +350,7 @@ def drawAgents():
             Start = ui.IDs["AgentNode" + str(Agent[1])]
             End = ui.IDs["AgentNode" + str(Agent[0])]
             StartCords =  (np.array([(Start.x*scalex + 25*scaley),scaley* (Start.y + 25 + yoffset)]) + scaley*Agent[3])
-            EndCords = scaleMat @  (np.array([scalex*(End.x) + scaley*(25), scaley*(End.y + 25 + yoffset)]) +scaley* Agent[2])
+            EndCords =  (np.array([(scalex*(End.x) + scaley*(25)), scaley*(End.y + 25 + yoffset)]) + scaley* Agent[2])
             pyui.draw.circle(screen, (255, 20, 100), StartCords - (CurrentFrame[0]/AgentAnimationFrames[0]) * (StartCords-EndCords), 3*scaley)
         CurrentFrame[0] += 1
         if CurrentFrame[0] == AgentAnimationFrames[0]:
