@@ -9,6 +9,7 @@ from Fraction import Fraction
 Connections = []
 SingleAgentConnections = []
 ## importing modules
+
 numberOfNodes = 4
 TransMatrix = np.zeros((numberOfNodes,numberOfNodes),
                        dtype=np.int16).tolist()
@@ -78,7 +79,7 @@ done = False
 # clock keeps fps consistant at 60
 clock = pygame.time.Clock()
 
-ui.styleload_lightblue()
+ui.styleload_soundium()
 ui.styleset(textsize=50)
 ui.styleset(textcenter=True)
 ui.windowmenucol = pyui.shiftcolor(pyui.Style.objectdefaults[pyui.WINDOW]['col'],-35)
@@ -349,6 +350,8 @@ def connectNodes():
             pyui.draw.polygon(screen, (0, 0, 0), [ArrowHead, leftArrow, rightArrow])
 
 def drawAgents():
+    #agentcol = (255,20,100)
+    agentcol = (150, 50, 255)
     if OptionSelector.active == "Agents":
         yoffset = 0
         try:
@@ -362,14 +365,14 @@ def drawAgents():
             for Agent in Agents:
                 Start = ui.IDs["AgentNode"+ str(Agent[0])]
                 StartCords = (np.array([(Start.x *scalex + 25*scaley), scaley*(Start.y + 25+ yoffset)])+ scaley * Agent[2])
-                pyui.draw.circle(screen, (255,20,100),StartCords, 3)
+                pyui.draw.circle(screen, agentcol,StartCords, 3)
             return
         for Agent in Agents:
             Start = ui.IDs["AgentNode" + str(Agent[1])]
             End = ui.IDs["AgentNode" + str(Agent[0])]
             StartCords =  (np.array([(Start.x*scalex + 25*scaley),scaley* (Start.y + 25 + yoffset)]) + scaley*Agent[3])
             EndCords =  (np.array([(scalex*(End.x) + scaley*(25)), scaley*(End.y + 25 + yoffset)]) + scaley* Agent[2])
-            pyui.draw.circle(screen, (255, 20, 100), StartCords - (CurrentFrame[0]/AgentAnimationFrames[0]) * (StartCords-EndCords), 3*scaley)
+            pyui.draw.circle(screen, agentcol, StartCords - (CurrentFrame[0]/AgentAnimationFrames[0]) * (StartCords-EndCords), 3*scaley)
         CurrentFrame[0] += 1
         if CurrentFrame[0] == AgentAnimationFrames[0]:
             CurrentFrame[0] = 0
@@ -388,13 +391,13 @@ def drawAgents():
         if not (SingleAgentAnimating[0]):
             Start = ui.IDs["SingleAgentNode" + str(SingleAgent[0][-1])]
             StartCords =  (np.array([(scalex* Start.x + scaley*25), scaley*(Start.y + 25 + yoffset)]) + scaley*SingleAgent[1])
-            pyui.draw.circle(screen, (255, 20, 100), StartCords, 3)
+            pyui.draw.circle(screen, agentcol, StartCords, 3)
             return
         Start = ui.IDs["SingleAgentNode" + str(SingleAgent[0][-2])]
         End = ui.IDs["SingleAgentNode" + str(SingleAgent[0][-1])]
         StartCords = (np.array([(scalex*Start.x + scaley*25), scaley*(Start.y + 25 + yoffset)]) + scaley*SingleAgent[2])
         EndCords =  (np.array([(scalex*End.x + scaley*25), scaley*(End.y + 25 + yoffset)]) +scaley* SingleAgent[1])
-        pyui.draw.circle(screen, (255, 20, 100), StartCords - (CurrentSingleFrame[0] / SingleAgentAnimationFrames[0]) * (StartCords - EndCords), 3)
+        pyui.draw.circle(screen, agentcol, StartCords - (CurrentSingleFrame[0] / SingleAgentAnimationFrames[0]) * (StartCords - EndCords), 3)
         CurrentSingleFrame[0] += 1
         if CurrentSingleFrame[0] == SingleAgentAnimationFrames[0]:
             CurrentSingleFrame[0] = 0
