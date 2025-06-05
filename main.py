@@ -144,9 +144,11 @@ def makeSideBar():
     AgentAvg.append(ui.maketextbox(10,next(ypos),text="100",ID = "AgentNum", width=160,height=50,allowedcharacters=''.join([str(x) for x in range(10)])))
     AgentAvg.append(ui.makebutton(10,next(ypos),"Restart",command= restartAgents, textsize=40, width=160,height=50))
     #Make Menus in top right
+    for item in (MatrixItems+AgentAvg+TAvgItems):
+        item.scaleby = "vertical"
     MatrixMenu = ui.makewindow(-190, 70, 180,500, ID= "Msidebar", anchor=('w', '0'),bounditems=MatrixItems, animationtype='moveright',autoshutwindows=["Tsidebar", "Asidebar"])
-    TimeMenu = ui.makewindow(-190, 70, 180,640, ID= "Tsidebar", anchor=('w', '0'),bounditems=TAvgItems,animationtype= 'moveright',autoshutwindows=["Msidebar", "Asidebar"])
-    AgentMenu = ui.makewindow(-190, 70, 180,640, ID= "Asidebar", anchor=('w', '0'),bounditems= AgentAvg,animationtype= 'moveright',autoshutwindows=["Tsidebar", "Msidebar"])
+    TimeMenu = ui.makewindow(-190, 70, 180,640, ID= "Tsidebar", anchor=('w', '0'),bounditems=TAvgItems,animationtype= 'moveright',autoshutwindows=["Msidebar", "Asidebar"],scaleby="vertical")
+    AgentMenu = ui.makewindow(-190, 70, 180,640, ID= "Asidebar", anchor=('w', '0'),bounditems= AgentAvg,animationtype= 'moveright',autoshutwindows=["Tsidebar", "Msidebar"],scaleby="vertical")
     MatrixMenu.open(animation='left')
 
 
@@ -229,7 +231,7 @@ def makeTimeBacking():
         TimeBackingItems.append(ui.makerect(40,ycord+10,ID= "SingleAgentBar"+ str(pos[0]),width = 0,height= 20))
     for item in TimeBackingItems:
         item.scaleby = "vertical"
-    TimeBacking = ui.makewindow(10, 10, 1000-10,880, ID= "TBack",bounditems = TimeBackingItems,backingdraw=False,animationtype= 'movedown',autoshutwindows=["MBack", "ABack"])
+    TimeBacking = ui.makewindow(10, 10, 1000-10,880, ID= "TBack",bounditems = TimeBackingItems, scaleby="vertical",backingdraw=False,animationtype= 'movedown',autoshutwindows=["MBack", "ABack"], objanchor=('w/2','0'), anchor=('(w-200)/2', '0'))
 
 
 def connectNodes():
@@ -269,8 +271,8 @@ def connectNodes():
             #print(pyui.draw.bezierdrawer((StartCords,EndCords),2,commandpoints=False))
             pointsOnLine = pyui.draw.bezierdrawer(setOfPoints,2,commandpoints=False,rounded=False)
             pygame.draw.lines(screen, color= (0,0,0), closed = False, points=  pointsOnLine)
-            ui.IDs["AgentConnection" + str(connectionNum)].x = pointsOnLine[20][0] + 5
-            ui.IDs["AgentConnection" + str(connectionNum)].y = pointsOnLine[20][1] + 5
+            ui.IDs["AgentConnection" + str(connectionNum)].x = pointsOnLine[20][0]/scalex +5
+            ui.IDs["AgentConnection" + str(connectionNum)].y = pointsOnLine[20][1]/scaley +5
             # Make Arrows
             ArrowLen =15
             ArrowWidth = 4
@@ -317,8 +319,8 @@ def connectNodes():
             pointsOnLine = pyui.draw.bezierdrawer(setOfPoints, 2, commandpoints=False, rounded=False)
             pygame.draw.lines(screen, color=(0, 0, 0), closed=False, points=pointsOnLine)
 
-            ui.IDs["SingleAgentConnection" + str(connectionNum)].x = pointsOnLine[20][0] + 5
-            ui.IDs["SingleAgentConnection" + str(connectionNum)].y = pointsOnLine[20][1] + 5
+            ui.IDs["SingleAgentConnection" + str(connectionNum)].x = pointsOnLine[20][0]/scalex + 5
+            ui.IDs["SingleAgentConnection" + str(connectionNum)].y = pointsOnLine[20][1]/scaley + 5
             # Make Arrows
             ArrowLen = 15
             ArrowWidth = 4
@@ -482,7 +484,7 @@ def restartAgents():
 
 
 OptionSelector = ui.makedropdown(-190, 10, ["Matrix", "T Avg", "Agents"], width=180, height=50, command=changeMode,
-                                     anchor=('w', '0'), dropsdown=False)
+                                     anchor=('w', '0'), dropsdown=False,scaleby="vertical")
 makeSideBar()
 makeAgentBacking()
 makeTimeBacking()
