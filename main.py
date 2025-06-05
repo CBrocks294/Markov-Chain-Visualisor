@@ -146,7 +146,7 @@ def makeSideBar():
     #Make Menus in top right
     for item in (MatrixItems+AgentAvg+TAvgItems):
         item.scaleby = "vertical"
-    MatrixMenu = ui.makewindow(-190, 70, 180,500, ID= "Msidebar", anchor=('w', '0'),bounditems=MatrixItems, animationtype='moveright',autoshutwindows=["Tsidebar", "Asidebar"])
+    MatrixMenu = ui.makewindow(-190, 70, 180,500, ID= "Msidebar", anchor=('w', '0'),bounditems=MatrixItems, animationtype='moveright',autoshutwindows=["Tsidebar", "Asidebar"], scaleby="vertical")
     TimeMenu = ui.makewindow(-190, 70, 180,640, ID= "Tsidebar", anchor=('w', '0'),bounditems=TAvgItems,animationtype= 'moveright',autoshutwindows=["Msidebar", "Asidebar"],scaleby="vertical")
     AgentMenu = ui.makewindow(-190, 70, 180,640, ID= "Asidebar", anchor=('w', '0'),bounditems= AgentAvg,animationtype= 'moveright',autoshutwindows=["Tsidebar", "Msidebar"],scaleby="vertical")
     MatrixMenu.open(animation='left')
