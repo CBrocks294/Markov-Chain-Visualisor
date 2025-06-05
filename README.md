@@ -12,3 +12,9 @@ For a valid markov chain the probability of leaving a node must sum to one. If y
 ```py 
 TransMatrix[0][4] = Fraction(1, 2)
 ```
+
+## Dependancies
+- numpy
+- pygame
+- networkx
+- UIpygame

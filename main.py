@@ -3,7 +3,6 @@ import numpy as np
 import pygame
 import networkx as nx
 from UIpygame import PyUI as pyui
-import matplotlib.pyplot as plt
 import random
 from Fraction import Fraction
 
