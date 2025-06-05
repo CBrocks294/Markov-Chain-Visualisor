@@ -10,9 +10,10 @@ from Fraction import Fraction
 Connections = []
 SingleAgentConnections = []
 ## importing modules
-
-TransMatrix = np.zeros((4,4),
+numberOfNodes = 4
+TransMatrix = np.zeros((numberOfNodes,numberOfNodes),
                        dtype=np.int16).tolist()
+
 TransMatrix[0][0] = Fraction(1, 2)
 TransMatrix[1][0] = Fraction(1, 2)
 TransMatrix[2][1] = Fraction(1)
@@ -21,8 +22,24 @@ TransMatrix[3][2] = Fraction(1,2)
 TransMatrix[0][2] = Fraction(1,6)
 TransMatrix[1][3]= Fraction(1,5)
 TransMatrix[0][3]= Fraction(4,5)
-if len(TransMatrix) != len(TransMatrix[0]):
-    raise ValueError
+
+
+#Change to true to get 4x4 groid of notes
+if False:
+    numberOfNodes = 16
+    TransMatrix = np.zeros((numberOfNodes, numberOfNodes),
+                           dtype=np.int16).tolist()
+    for row in range(4):
+        for col in range(4):
+            prob = Fraction(1,(2+ (row in [1,2]) + (col in [1,2])))
+            if col != 3:
+                TransMatrix[4*row+col+1][4*row+col] = prob
+            if col != 0:
+                TransMatrix[4*row+col-1][4*row+col] = prob
+            if row != 0:
+                TransMatrix[4 * row + col - 4][4 * row + col] = prob
+            if row != 3:
+                TransMatrix[4 * row + col +4][4 * row + col] = prob
 
 NPTransMatrix = np.array(TransMatrix, dtype=np.float32)
 statevector = [np.ones(len(TransMatrix))/len(TransMatrix)]
@@ -205,7 +222,7 @@ def makeAgentBacking():
                 AgentBackingItems.append(ui.maketext(0,0,str(round(val,4)),20, ID = "AgentConnection" + str(len(Connections)-1)))
     ypos = posGen()
     for pos in list(nx.spring_layout(G).items()):
-        AgentBackingItems.append(ui.makebutton(pos[1][0]*450,pos[1][0]*400,chr(pos[0]+65),width=50,height=50, hovercol=0,roundedcorners=25,clickdownsize=0,dragable=True,ID= "AgentNode"+ str(pos[0]), runcommandat=1, objanchor=('w/2', 'h/2') , anchor=('w/2', 'h/2')))
+        AgentBackingItems.append(ui.makebutton(pos[1][0]*450,pos[1][1]*400,chr(pos[0]+65),width=50,height=50, hovercol=0,roundedcorners=25,clickdownsize=0,dragable=True,ID= "AgentNode"+ str(pos[0]), runcommandat=1, objanchor=('w/2', 'h/2') , anchor=('w/2', 'h/2')))
         AgentBackingItems.append(ui.maketext(0, ycord := next(ypos)/2,chr(pos[0]+65)))
         AgentBackingItems.append(ui.makerect(40,ycord+10,ID= "AgentBar"+ str(pos[0]),width = 300*len(list(filter(lambda x: x[0] == pos[0], Agents)))/len(Agents),height= 20))
     for item in AgentBackingItems:
@@ -226,7 +243,7 @@ def makeTimeBacking():
                     ui.maketext(0, 0, str(round(val, 4)), 20, ID="SingleAgentConnection" + str(len(SingleAgentConnections) - 1)))
     ypos = posGen()
     for pos in list(nx.spring_layout(G).items()):
-        TimeBackingItems.append(ui.makebutton(pos[1][0]*450,pos[1][0]*400,chr(pos[0]+65),width=50,height=50, hovercol=0,roundedcorners=25,clickdownsize=0,dragable=True,ID= "SingleAgentNode"+ str(pos[0]), runcommandat=1, objanchor=('w/2', 'h/2') , anchor=('w/2', 'h/2')))
+        TimeBackingItems.append(ui.makebutton(pos[1][0]*450,pos[1][1]*400,chr(pos[0]+65),width=50,height=50, hovercol=0,roundedcorners=25,clickdownsize=0,dragable=True,ID= "SingleAgentNode"+ str(pos[0]), runcommandat=1, objanchor=('w/2', 'h/2') , anchor=('w/2', 'h/2')))
         TimeBackingItems.append(ui.maketext(0, ycord := next(ypos)/2,chr(pos[0]+65)))
         TimeBackingItems.append(ui.makerect(40,ycord+10,ID= "SingleAgentBar"+ str(pos[0]),width = 0,height= 20))
     for item in TimeBackingItems:
